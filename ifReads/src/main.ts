@@ -8,6 +8,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import fastifyCookie from '@fastify/cookie';
 import { AppModule } from './app.module.js';
+import { HttpExceptionFilter } from './http-exception/http-exception.filter.js';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -26,6 +27,7 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors({
     origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
     credentials: true,

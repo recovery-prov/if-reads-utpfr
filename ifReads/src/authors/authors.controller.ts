@@ -7,14 +7,17 @@ import {
   ParseIntPipe,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import * as jwtPayloadInterface from '../auth/jwt-payload.interface.js';
 import { AuthorsService } from './authors.service.js';
 import { CreateAuthorDto } from './dto/create-author.dto.js';
+import { TransformInterceptor } from '../transform/transform.interceptor.js';
 
 @Controller('fictions/:fictionId/authors')
+@UseInterceptors(TransformInterceptor)
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 

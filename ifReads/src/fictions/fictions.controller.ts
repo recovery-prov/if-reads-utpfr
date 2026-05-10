@@ -9,6 +9,7 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateFictionDto } from './dto/create-fiction.dto.js';
 import { UpdateFictionDto } from './dto/update-fiction.dto.js';
@@ -16,8 +17,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import * as jwtPayloadInterface from '../auth/jwt-payload.interface.js';
 import { FictionsService } from './fictions.service.js';
+import { TransformInterceptor } from '../transform/transform.interceptor.js';
 
 @Controller('fiction')
+@UseInterceptors(TransformInterceptor)
 export class FictionsController {
   constructor(private readonly fictionService: FictionsService) {}
 

@@ -45,7 +45,7 @@ async function createFiction(token: string): Promise<number> {
       link: 'https://exemplo.com/ficcao',
     },
   });
-  return (JSON.parse(res.body) as { id: number }).id;
+  return (JSON.parse(res.body) as { data: { id: number } }).data.id;
 }
 
 const reviewPayload = {
@@ -73,8 +73,11 @@ describe('POST /fictions/:fictionId/reviews', () => {
     });
 
     expect(res.statusCode).toBe(201);
-    const body = JSON.parse(res.body) as Record<string, unknown>;
-    expect(body).toMatchObject({ rating: 4, narrative: 5 });
+    const body = JSON.parse(res.body) as {
+      success: boolean;
+      data: Record<string, unknown>;
+    };
+    expect(body.data).toMatchObject({ rating: 4, narrative: 5 });
   });
 
   it('409 - deve rejeitar review duplicado do mesmo usuário', async () => {
@@ -120,8 +123,12 @@ describe('GET /fictions/:fictionId/reviews', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    const body = JSON.parse(res.body) as Record<string, unknown>;
+    const body = JSON.parse(res.body) as {
+      success: boolean;
+      data: Record<string, unknown>;
+    };
     expect(body).toHaveProperty('data');
-    expect(body).toHaveProperty('total');
+    expect(body.data).toHaveProperty('items');
+    expect(body.data).toHaveProperty('total');
   });
 });

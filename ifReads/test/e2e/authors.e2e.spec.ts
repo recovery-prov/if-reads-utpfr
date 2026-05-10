@@ -45,7 +45,7 @@ async function createFiction(token: string): Promise<number> {
       link: 'https://exemplo.com/ficcao',
     },
   });
-  return (JSON.parse(res.body) as { id: number }).id;
+  return (JSON.parse(res.body) as { data: { id: number } }).data.id;
 }
 
 describe('POST /fictions/:fictionId/authors', () => {
@@ -65,7 +65,9 @@ describe('POST /fictions/:fictionId/authors', () => {
     });
 
     expect(res.statusCode).toBe(201);
-    expect(JSON.parse(res.body) as Record<string, unknown>).toMatchObject({
+    expect(
+      (JSON.parse(res.body) as { data: Record<string, unknown> }).data,
+    ).toMatchObject({
       name: 'Autor Colaborador',
       role: 'coauthor',
     });
@@ -104,6 +106,8 @@ describe('GET /fictions/:fictionId/authors', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(JSON.parse(res.body) as unknown[])).toBe(true);
+    expect(
+      Array.isArray((JSON.parse(res.body) as { data: unknown[] }).data),
+    ).toBe(true);
   });
 });

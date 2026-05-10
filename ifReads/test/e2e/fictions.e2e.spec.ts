@@ -58,8 +58,11 @@ describe('POST /fiction', () => {
     });
 
     expect(res.statusCode).toBe(201);
-    const body = JSON.parse(res.body) as Record<string, unknown>;
-    expect(body).toMatchObject({ title: 'Minha Ficção' });
+    const body = JSON.parse(res.body) as {
+      success: boolean;
+      data: Record<string, unknown>;
+    };
+    expect(body.data).toMatchObject({ title: 'Minha Ficção' });
   });
 
   it('401 - deve rejeitar criação sem token', async () => {
@@ -81,9 +84,13 @@ describe('GET /fiction', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    const body = JSON.parse(res.body) as Record<string, unknown>;
+    const body = JSON.parse(res.body) as {
+      success: boolean;
+      data: Record<string, unknown>;
+    };
     expect(body).toHaveProperty('data');
-    expect(body).toHaveProperty('total');
+    expect(body.data).toHaveProperty('items');
+    expect(body.data).toHaveProperty('total');
   });
 });
 
@@ -107,7 +114,8 @@ describe('PATCH /fiction/:id', () => {
       headers: { authorization: `Bearer ${ownerToken}` },
       payload: fictionPayload,
     });
-    const fictionId = (JSON.parse(createRes.body) as { id: number }).id;
+    const fictionId = (JSON.parse(createRes.body) as { data: { id: number } })
+      .data.id;
 
     // Tenta atualizar como outro usuário
     const res = await app.inject({

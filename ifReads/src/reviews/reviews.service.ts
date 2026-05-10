@@ -52,7 +52,7 @@ export class ReviewsService {
 
     const skip = (page - 1) * limit;
 
-    const [data, total] = await Promise.all([
+    const [items, total] = await Promise.all([
       this.prisma.review.findMany({
         where: { fictionId },
         skip,
@@ -65,7 +65,7 @@ export class ReviewsService {
       this.prisma.review.count({ where: { fictionId } }),
     ]);
 
-    return { data, total, page, limit };
+    return { items, total, page, limit };
   }
 
   async update(

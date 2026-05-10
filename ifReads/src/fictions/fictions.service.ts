@@ -23,7 +23,7 @@ export class FictionsService {
   async findAll(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
 
-    const [data, total] = await Promise.all([
+    const [items, total] = await Promise.all([
       this.prisma.fiction.findMany({
         skip,
         take: limit,
@@ -40,18 +40,18 @@ export class FictionsService {
 
     const avgRatings = await this.prisma.review.groupBy({
       by: ['fictionId'],
-      where: { fictionId: { in: data.map((f) => f.id) } },
+      where: { fictionId: { in: items.map((f) => f.id) } },
       _avg: { rating: true },
     });
 
     const avgMap = new Map(avgRatings.map((r) => [r.fictionId, r._avg.rating]));
 
-    const enriched = data.map((f) => ({
+    const enriched = items.map((f) => ({
       ...f,
       averageRating: avgMap.get(f.id) ?? null,
     }));
 
-    return { data: enriched, total, page, limit };
+    return { items: enriched, total, page, limit };
   }
 
   async findOne(id: number) {

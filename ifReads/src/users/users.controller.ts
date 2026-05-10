@@ -10,6 +10,7 @@ import {
   HttpStatus,
   ParseIntPipe,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-users.dto.js';
@@ -18,8 +19,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import * as jwtPayloadInterface from '../auth/jwt-payload.interface.js';
 import { UsersService } from './users.service.js';
+import { TransformInterceptor } from '../transform/transform.interceptor.js';
 
 @Controller('users')
+@UseInterceptors(TransformInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
