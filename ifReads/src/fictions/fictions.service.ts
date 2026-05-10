@@ -51,7 +51,7 @@ export class FictionsService {
       averageRating: avgMap.get(f.id) ?? null,
     }));
 
-    return { items: enriched, total, page, limit };
+    return { data: enriched, total, page, limit };
   }
 
   async findOne(id: number) {

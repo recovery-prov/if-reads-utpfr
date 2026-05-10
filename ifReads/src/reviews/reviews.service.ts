@@ -65,7 +65,7 @@ export class ReviewsService {
       this.prisma.review.count({ where: { fictionId } }),
     ]);
 
-    return { items, total, page, limit };
+    return { data: items, total, page, limit };
   }
 
   async update(

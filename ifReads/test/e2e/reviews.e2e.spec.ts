@@ -128,7 +128,7 @@ describe('GET /fictions/:fictionId/reviews', () => {
       data: Record<string, unknown>;
     };
     expect(body).toHaveProperty('data');
-    expect(body.data).toHaveProperty('items');
+    expect(body.data).toHaveProperty('data');
     expect(body.data).toHaveProperty('total');
   });
 });
