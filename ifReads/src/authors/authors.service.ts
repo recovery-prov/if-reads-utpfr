@@ -1,10 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateAuthorDto } from './dto/create-author.dto.js';
+import {
+  FictionNotFoundException,
+  AuthorNotFoundException,
+  AuthorOwnershipException,
+} from '../common/exceptions/index.js';
 
 @Injectable()
 export class AuthorsService {
@@ -16,13 +17,11 @@ export class AuthorsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(fictionId);
     }
 
     if (fiction.authorId !== userId) {
-      throw new ForbiddenException(
-        'Apenas o autor da ficção pode vincular escritores',
-      );
+      throw new AuthorOwnershipException('vincular escritores');
     }
 
     return this.prisma.author.create({
@@ -40,7 +39,7 @@ export class AuthorsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(fictionId);
     }
 
     return this.prisma.author.findMany({
@@ -54,13 +53,11 @@ export class AuthorsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(fictionId);
     }
 
     if (fiction.authorId !== userId) {
-      throw new ForbiddenException(
-        'Apenas o autor da ficção pode remover escritores',
-      );
+      throw new AuthorOwnershipException('remover escritores');
     }
 
     const author = await this.prisma.author.findFirst({
@@ -68,7 +65,7 @@ export class AuthorsService {
     });
 
     if (!author) {
-      throw new NotFoundException('Escritor não encontrado');
+      throw new AuthorNotFoundException(id);
     }
 
     return this.prisma.author.delete({ where: { id } });

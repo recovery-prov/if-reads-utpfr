@@ -1,11 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateFictionDto } from './dto/create-fiction.dto.js';
 import { UpdateFictionDto } from './dto/update-fiction.dto.js';
+import {
+  FictionNotFoundException,
+  FictionOwnershipException,
+} from '../common/exceptions/index.js';
 
 @Injectable()
 export class FictionsService {
@@ -71,7 +71,7 @@ export class FictionsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(id);
     }
 
     const avgResult = await this.prisma.review.aggregate({
@@ -109,11 +109,11 @@ export class FictionsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(id);
     }
 
     if (fiction.authorId !== userId) {
-      throw new ForbiddenException('Apenas o autor pode editar esta ficção');
+      throw new FictionOwnershipException('editar esta ficção');
     }
 
     return this.prisma.fiction.update({
@@ -132,11 +132,11 @@ export class FictionsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(id);
     }
 
     if (fiction.authorId !== userId) {
-      throw new ForbiddenException('Apenas o autor pode excluir esta ficção');
+      throw new FictionOwnershipException('excluir esta ficção');
     }
 
     return this.prisma.fiction.delete({ where: { id } });

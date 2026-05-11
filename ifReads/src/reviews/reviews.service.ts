@@ -1,12 +1,14 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateReviewDto } from './dto/create-reviews.dto.js';
 import { UpdateReviewDto } from './dto/update-reviews.dto.js';
+import {
+  FictionNotFoundException,
+  ReviewNotFoundException,
+  ReviewOwnershipException,
+  DuplicateReviewException,
+  CannotReviewOwnFictionException,
+} from '../common/exceptions/index.js';
 
 @Injectable()
 export class ReviewsService {
@@ -18,7 +20,11 @@ export class ReviewsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(fictionId);
+    }
+
+    if (fiction.authorId === authorId) {
+      throw new CannotReviewOwnFictionException();
     }
 
     const existing = await this.prisma.review.findUnique({
@@ -26,7 +32,7 @@ export class ReviewsService {
     });
 
     if (existing) {
-      throw new ConflictException('Você já avaliou esta ficção');
+      throw new DuplicateReviewException();
     }
 
     return this.prisma.review.create({
@@ -47,7 +53,7 @@ export class ReviewsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(fictionId);
     }
 
     const skip = (page - 1) * limit;
@@ -79,11 +85,11 @@ export class ReviewsService {
     });
 
     if (!review) {
-      throw new NotFoundException('Avaliação não encontrada');
+      throw new ReviewNotFoundException(id);
     }
 
     if (review.authorId !== userId) {
-      throw new ForbiddenException('Apenas o autor pode editar esta avaliação');
+      throw new ReviewOwnershipException('editar');
     }
 
     return this.prisma.review.update({
@@ -101,13 +107,11 @@ export class ReviewsService {
     });
 
     if (!review) {
-      throw new NotFoundException('Avaliação não encontrada');
+      throw new ReviewNotFoundException(id);
     }
 
     if (review.authorId !== userId) {
-      throw new ForbiddenException(
-        'Apenas o autor pode excluir esta avaliação',
-      );
+      throw new ReviewOwnershipException('excluir');
     }
 
     return this.prisma.review.delete({ where: { id } });

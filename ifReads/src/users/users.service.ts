@@ -1,14 +1,18 @@
 import {
   Injectable,
-  NotFoundException,
-  ConflictException,
   BadRequestException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import {
+  DuplicateEmailException,
+  FictionNotFoundException,
+  UserNotFoundException,
+} from '../common/exceptions/index.js';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +24,7 @@ export class UsersService {
     });
 
     if (existing) {
-      throw new ConflictException('Email já cadastrado');
+      throw new DuplicateEmailException();
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
@@ -55,7 +59,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new UserNotFoundException();
     }
 
     return user;
@@ -67,7 +71,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new UserNotFoundException();
     }
 
     return this.prisma.user.update({
@@ -88,7 +92,7 @@ export class UsersService {
       where: { id: userId },
     });
 
-    if (!user) throw new NotFoundException('Usuário não encontrado');
+    if (!user) throw new UserNotFoundException();
 
     const valid = await bcrypt.compare(dto.currentPassword, user.password);
     if (!valid) throw new UnauthorizedException('Senha atual incorreta');
@@ -122,7 +126,7 @@ export class UsersService {
     const fiction = await this.prisma.fiction.findUnique({
       where: { id: fictionId },
     });
-    if (!fiction) throw new NotFoundException('Ficção não encontrada');
+    if (!fiction) throw new FictionNotFoundException(fictionId);
 
     return this.prisma.favorite.upsert({
       where: { userId_fictionId: { userId, fictionId } },

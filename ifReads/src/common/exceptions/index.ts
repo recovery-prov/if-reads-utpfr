@@ -1,0 +1,11 @@
+export { FictionNotFoundException } from './fiction-not-found.exception.js';
+export { AuthorNotFoundException } from './author-not-found.exception.js';
+export { ReviewNotFoundException } from './review-not-found.exception.js';
+export { UserNotFoundException } from './user-not-found.exception.js';
+export { FictionOwnershipException } from './fiction-ownership.exception.js';
+export { AuthorOwnershipException } from './author-ownership.exception.js';
+export { ReviewOwnershipException } from './review-ownership.exception.js';
+export { DuplicateReviewException } from './duplicate-review.exception.js';
+export { DuplicateEmailException } from './duplicate-email.exception.js';
+export { InvalidCredentialsException } from './invalid-credentials.exception.js';
+export { CannotReviewOwnFictionException } from './cannot-review-own-fiction.exception.js';
