@@ -136,8 +136,6 @@ export class UsersController {
     return this.usersService.getMyReviews(user.sub);
   }
 
-  // --- Admin ---
-
   @ApiOperation({ summary: '[Admin] Listar todos os usuários' })
   @ApiResponse({ status: 200, description: 'Lista de usuários' })
   @ApiResponse({ status: 401, description: 'Não autenticado' })

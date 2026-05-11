@@ -2,7 +2,13 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcryptjs';
 import { PrismaClient } from '../src/generated/prisma/index.js';
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error(
+    'DATABASE_URL não definida. Crie um arquivo .env com a variável DATABASE_URL.',
+  );
+}
+const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
@@ -27,6 +33,15 @@ async function main() {
       },
     }),
   ]);
+
+  const admin = await prisma.user.create({
+    data: {
+      name: 'Admin',
+      email: 'admin@ifreads.com',
+      password: await bcrypt.hash('admin123', 10),
+      role: 'ADMIN',
+    },
+  });
 
   const [dracula, frankenstein] = await Promise.all([
     prisma.fiction.create({
@@ -85,7 +100,7 @@ async function main() {
   ]);
 
   console.log('Seed concluído!');
-  console.log(`  Usuários: ${alice.name}, ${bob.name}`);
+  console.log(`  Usuários: ${alice.name}, ${bob.name}, ${admin.name} (ADMIN)`);
   console.log(`  Ficções: "${dracula.title}", "${frankenstein.title}"`);
 }
 

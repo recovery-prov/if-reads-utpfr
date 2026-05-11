@@ -23,7 +23,7 @@
     "test:integration": "vitest --project integration",
     "test:e2e": "vitest --project e2e",
     "test:unit": "vitest --project unit",
-    "seed": "tsx prisma/seed.ts",
+    "seed": "tsx --env-file=.env prisma/seed.ts",
     "start:web": "npm --prefix src/interface/web run dev",
     "start:all": "concurrently \"npm run start:dev\" \"npm run start:web\""
   },
