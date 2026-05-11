@@ -27,7 +27,7 @@ export class RolesGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<{ user: JwtPayload }>();
     const userRole = request.user?.role;
-    const allowed = requiredRoles.includes(userRole);
+    const allowed = userRole === Role.ADMIN || requiredRoles.includes(userRole);
 
     this.logger.log(
       `Verificação de role — usuário: ${request.user?.sub} | role: ${userRole} | requerida: [${requiredRoles.join(', ')}] | acesso: ${allowed ? 'PERMITIDO' : 'NEGADO'}`,
