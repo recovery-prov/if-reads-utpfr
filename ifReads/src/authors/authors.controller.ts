@@ -69,34 +69,3 @@ export class AuthorsController {
     return this.authorsService.remove(fictionId, id, user.sub);
   }
 }
-
-@Controller('fictions/:fictionId/authors')
-@UseInterceptors(TransformInterceptor)
-export class AuthorsController {
-  constructor(private readonly authorsService: AuthorsService) {}
-
-  @UseGuards(JwtAuthGuard)
-  @Post()
-  create(
-    @Param('fictionId', ParseIntPipe) fictionId: number,
-    @Body() dto: CreateAuthorDto,
-    @CurrentUser() user: jwtPayloadInterface.JwtPayload,
-  ) {
-    return this.authorsService.create(fictionId, dto, user.sub);
-  }
-
-  @Get()
-  findAll(@Param('fictionId', ParseIntPipe) fictionId: number) {
-    return this.authorsService.findAll(fictionId);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  remove(
-    @Param('fictionId', ParseIntPipe) fictionId: number,
-    @Param('id', ParseIntPipe) id: number,
-    @CurrentUser() user: jwtPayloadInterface.JwtPayload,
-  ) {
-    return this.authorsService.remove(fictionId, id, user.sub);
-  }
-}
