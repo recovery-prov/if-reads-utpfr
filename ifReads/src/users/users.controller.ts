@@ -16,6 +16,9 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-users.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { Role } from '../auth/role.enum.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import * as jwtPayloadInterface from '../auth/jwt-payload.interface.js';
 import { UsersService } from './users.service.js';
@@ -87,5 +90,39 @@ export class UsersController {
   @Get('me/reviews')
   getMyReviews(@CurrentUser() user: jwtPayloadInterface.JwtPayload) {
     return this.usersService.getMyReviews(user.sub);
+  }
+
+  // --- Admin ---
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch(':id')
+  adminUpdate(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateUserDto,
+  ) {
+    return this.usersService.adminUpdate(id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  adminDelete(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.adminDelete(id);
   }
 }
