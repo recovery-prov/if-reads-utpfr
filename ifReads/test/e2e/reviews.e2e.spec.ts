@@ -48,6 +48,18 @@ async function createFiction(token: string): Promise<number> {
   return (JSON.parse(res.body) as { data: { id: number } }).data.id;
 }
 
+async function registerAuthorAndCreateFiction(): Promise<{
+  fictionId: number;
+}> {
+  const authorToken = await registerAndGetToken(
+    'Autor Ficticio',
+    'autor@email.com',
+    'senha123',
+  );
+  const fictionId = await createFiction(authorToken);
+  return { fictionId };
+}
+
 const reviewPayload = {
   rating: 4,
   comment: 'Muito boa!',
@@ -63,7 +75,7 @@ describe('POST /fictions/:fictionId/reviews', () => {
       'beatriz@email.com',
       'senha123',
     );
-    const fictionId = await createFiction(token);
+    const { fictionId } = await registerAuthorAndCreateFiction();
 
     const res = await app.inject({
       method: 'POST',
@@ -86,7 +98,7 @@ describe('POST /fictions/:fictionId/reviews', () => {
       'beatriz@email.com',
       'senha123',
     );
-    const fictionId = await createFiction(token);
+    const { fictionId } = await registerAuthorAndCreateFiction();
 
     // Primeira review
     await app.inject({

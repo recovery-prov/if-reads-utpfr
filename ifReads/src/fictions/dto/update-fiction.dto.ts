@@ -1,12 +1,20 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString, IsInt, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsInt,
+  Min,
+  Max,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class UpdateFictionDto {
   @ApiPropertyOptional({ example: 'Zork: A Grande Aventura Subterrânea' })
   @Transform(({ value }: { value: string }) => value?.trim())
   @IsString()
   @IsOptional()
+  @IsNotEmpty()
   title?: string;
 
   @ApiPropertyOptional({ example: 'Uma aventura de texto clássica.' })

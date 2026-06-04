@@ -6,8 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-npx prisma migrate dev --name add_user_role
-npx prisma generate
+
 enum Role {
   USER
   ADMIN
