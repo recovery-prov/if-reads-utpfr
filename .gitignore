@@ -32,6 +32,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+.github/copilot-instructions.md
 
 # IDE - VSCode
 .vscode/*

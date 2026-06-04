@@ -1,11 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateFictionDto } from './dto/create-fiction.dto.js';
 import { UpdateFictionDto } from './dto/update-fiction.dto.js';
+import {
+  FictionNotFoundException,
+  FictionOwnershipException,
+} from '../common/exceptions/index.js';
 
 @Injectable()
 export class FictionsService {
@@ -23,7 +23,7 @@ export class FictionsService {
   async findAll(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
 
-    const [data, total] = await Promise.all([
+    const [items, total] = await Promise.all([
       this.prisma.fiction.findMany({
         skip,
         take: limit,
@@ -40,13 +40,13 @@ export class FictionsService {
 
     const avgRatings = await this.prisma.review.groupBy({
       by: ['fictionId'],
-      where: { fictionId: { in: data.map((f) => f.id) } },
+      where: { fictionId: { in: items.map((f) => f.id) } },
       _avg: { rating: true },
     });
 
     const avgMap = new Map(avgRatings.map((r) => [r.fictionId, r._avg.rating]));
 
-    const enriched = data.map((f) => ({
+    const enriched = items.map((f) => ({
       ...f,
       averageRating: avgMap.get(f.id) ?? null,
     }));
@@ -71,7 +71,7 @@ export class FictionsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(id);
     }
 
     const avgResult = await this.prisma.review.aggregate({
@@ -109,11 +109,11 @@ export class FictionsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(id);
     }
 
     if (fiction.authorId !== userId) {
-      throw new ForbiddenException('Apenas o autor pode editar esta ficção');
+      throw new FictionOwnershipException('editar esta ficção');
     }
 
     return this.prisma.fiction.update({
@@ -132,11 +132,11 @@ export class FictionsService {
     });
 
     if (!fiction) {
-      throw new NotFoundException('Ficção não encontrada');
+      throw new FictionNotFoundException(id);
     }
 
     if (fiction.authorId !== userId) {
-      throw new ForbiddenException('Apenas o autor pode excluir esta ficção');
+      throw new FictionOwnershipException('excluir esta ficção');
     }
 
     return this.prisma.fiction.delete({ where: { id } });

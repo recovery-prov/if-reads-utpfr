@@ -50,9 +50,15 @@ describe('GET /users/me', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    const body = JSON.parse(res.body) as Record<string, unknown>;
-    expect(body).toMatchObject({ name: 'Beatriz', email: 'beatriz@email.com' });
-    expect(body).not.toHaveProperty('password');
+    const body = JSON.parse(res.body) as {
+      success: boolean;
+      data: Record<string, unknown>;
+    };
+    expect(body.data).toMatchObject({
+      name: 'Beatriz',
+      email: 'beatriz@email.com',
+    });
+    expect(body.data).not.toHaveProperty('password');
   });
 
   it('401 - deve rejeitar requisição sem token', async () => {
@@ -81,7 +87,9 @@ describe('PATCH /users/me', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    expect(JSON.parse(res.body) as Record<string, unknown>).toMatchObject({
+    expect(
+      (JSON.parse(res.body) as { data: Record<string, unknown> }).data,
+    ).toMatchObject({
       name: 'Beatriz Atualizada',
     });
   });
