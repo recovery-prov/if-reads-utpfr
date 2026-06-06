@@ -12,7 +12,7 @@ type FilterParams = {
 
 export const useFilteredStories = ({
   genre,
-  fictions,
+  fictions = [],
   searchQuery = '',
   sortBy = 'popular',
 }: FilterParams) =>
@@ -20,7 +20,7 @@ export const useFilteredStories = ({
     let result = [...fictions];
 
     if (genre !== 'All Genres') {
-      result = result.filter((f) =>
+      result = result?.filter((f) =>
         f.genre
           ?.split(',')
           .map((g) => g.trim())

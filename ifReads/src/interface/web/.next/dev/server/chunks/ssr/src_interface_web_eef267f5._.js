@@ -638,12 +638,12 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$interface$2f$web$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/interface/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
 ;
-const useFilteredStories = ({ genre, fictions, searchQuery = '', sortBy = 'popular' })=>(0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$interface$2f$web$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
+const useFilteredStories = ({ genre, fictions = [], searchQuery = '', sortBy = 'popular' })=>(0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$interface$2f$web$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
         let result = [
             ...fictions
         ];
         if (genre !== 'All Genres') {
-            result = result.filter((f)=>f.genre?.split(',').map((g)=>g.trim()).includes(genre));
+            result = result?.filter((f)=>f.genre?.split(',').map((g)=>g.trim()).includes(genre));
         }
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();

@@ -107,10 +107,7 @@ export default function ProfilePage() {
     );
   }
 
-  const initials = user.name
-    .split(' ')
-    .map((n) => n[0])
-    .join('');
+  const initials = user.name?.slice(0, 2).toUpperCase() ?? '';
 
   const joinedDate = new Date(user.createdAt).toLocaleDateString('pt-BR', {
     month: 'long',

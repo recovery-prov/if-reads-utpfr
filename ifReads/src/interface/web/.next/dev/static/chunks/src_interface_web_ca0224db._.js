@@ -706,6 +706,9 @@ const apiClient = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$interfa
     withCredentials: true
 });
 apiClient.interceptors.response.use((response)=>{
+    if (response.data !== null && typeof response.data === 'object' && 'data' in response.data) {
+        response.data = response.data.data;
+    }
     return response;
 }, (error)=>{
     if (error.response?.status === 401) {
@@ -746,7 +749,7 @@ const authApi = {
             const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$interface$2f$web$2f$app$2f$api$2f$client$2f$axiosClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiClient"].get('/auth/me');
             return {
                 isValid: true,
-                user: response.data.user
+                user: response.data.user ?? response.data
             };
         } catch  {
             return {

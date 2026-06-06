@@ -20,7 +20,7 @@ export const authApi = {
       const response = await apiClient.get('/auth/me');
       return {
         isValid: true,
-        user: response.data.user,
+        user: response.data.user ?? response.data,
       };
     } catch {
       return { isValid: false };
