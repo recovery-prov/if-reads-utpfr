@@ -1,0 +1,186 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - develop
+            - "feat/**"
+    pull_request:
+        branches:
+            - develop
+
+jobs:
+    backend-lint:
+        name: Backend — Lint
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ifReads
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/package-lock.json
+
+            - run: npm ci
+            - run: npx prisma generate
+            - run: npm run lint:ci
+
+    backend-format:
+        name: Backend — Format
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ifReads
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/package-lock.json
+
+            - run: npm ci
+            - run: npm run format:check
+
+    unit-tests:
+        name: Backend — Unit Tests
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ifReads
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/package-lock.json
+
+            - run: npm ci
+            - run: npx prisma generate
+            - run: npm run test:unit
+              env:
+                  JWT_SECRET: ci-test-secret
+
+    integration-tests:
+        name: Backend — Integration Tests
+        runs-on: ubuntu-latest
+        needs: unit-tests
+        defaults:
+            run:
+                working-directory: ifReads
+
+        services:
+            postgres-test:
+                image: postgres:16-alpine
+                ports:
+                    - 5433:5432
+                env:
+                    POSTGRES_USER: beatriz
+                    POSTGRES_PASSWORD: beatriz123
+                    POSTGRES_DB: if-reads-test
+                options: >-
+                    --health-cmd pg_isready --health-interval 10s
+                    --health-timeout 5s --health-retries 5
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/package-lock.json
+
+            - run: npm ci
+            - run: npx prisma generate
+
+            - name: Run integration tests
+              run: npm run test:integration
+              env:
+                  TEST_DB_URL: postgresql://beatriz:beatriz123@localhost:5433/if-reads-test
+                  JWT_SECRET: ci-test-secret
+
+    e2e-tests:
+        name: Backend — E2E Tests
+        runs-on: ubuntu-latest
+        needs: integration-tests
+        defaults:
+            run:
+                working-directory: ifReads
+
+        services:
+            postgres-test:
+                image: postgres:16-alpine
+                ports:
+                    - 5433:5432
+                env:
+                    POSTGRES_USER: beatriz
+                    POSTGRES_PASSWORD: beatriz123
+                    POSTGRES_DB: if-reads-test
+                options: >-
+                    --health-cmd pg_isready --health-interval 10s
+                    --health-timeout 5s --health-retries 5
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/package-lock.json
+
+            - run: npm ci
+            - run: npx prisma generate
+
+            - name: Run E2E tests
+              run: npm run test:e2e
+              env:
+                  TEST_DB_URL: postgresql://beatriz:beatriz123@localhost:5433/if-reads-test
+                  JWT_SECRET: ci-test-secret
+
+    backend-build:
+        name: Backend — Build
+        runs-on: ubuntu-latest
+        needs: e2e-tests
+        defaults:
+            run:
+                working-directory: ifReads
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/package-lock.json
+
+            - run: npm ci
+            - run: npx prisma generate
+            - run: npm run build
+
+    frontend-build:
+        name: Frontend — Build
+        runs-on: ubuntu-latest
+        needs: e2e-tests
+        defaults:
+            run:
+                working-directory: ifReads/src/interface/web
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ifReads/src/interface/web/package-lock.json
+
+            - run: npm ci
+            - run: npm run build

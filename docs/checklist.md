@@ -25,14 +25,14 @@
 ### ID3 - Assistencia de IA na Especificacao
 
 - [x] IA utilizada para gerar/revisar PRD e SDD
-- [ ] Evidencias de uso de IA documentadas (prints ou historico)
+- [X] Evidencias de uso de IA documentadas (prints ou historico)
 
 ### ID4 - Gestao Agil com Kanban
 
-- [ ] Kanban criado no GitHub Projects
-- [ ] Historias de usuario mapeadas como Issues
-- [ ] Colunas configuradas (To Do, In Progress, Done)
-- [ ] Labels criados (feature, bug, docs, etc.)
+- [X] Kanban criado no GitHub Projects
+- [X] Historias de usuario mapeadas como Issues
+- [X] Colunas configuradas (To Do, In Progress, Done)
+- [X] Labels criados (feature, bug, docs, etc.)
 
 ---
 
@@ -40,40 +40,40 @@
 
 ### ID5 - Projeto NestJS Inicializado
 
-- [ ] Projeto NestJS criado em `backend/`
-- [ ] `package.json` com dependencias (NestJS, Prisma, JWT, etc.)
-- [ ] `tsconfig.json` configurado
-- [ ] Estrutura de modulos seguindo o SDD
+- [X] Projeto NestJS criado em root
+- [X] `package.json` com dependencias (NestJS, Prisma, JWT, etc.)
+- [X] `tsconfig.json` configurado
+- [X] Estrutura de modulos seguindo o SDD
 
 ### ID6 - Prisma ORM Configurado
 
-- [ ] `schema.prisma` implementado conforme SDD
-- [ ] Migrations geradas e aplicadas
-- [ ] `PrismaService` criado como modulo global
-- [ ] Seed script para dados iniciais
+- [X] `schema.prisma` implementado conforme SDD
+- [X] Migrations geradas e aplicadas
+- [X] `PrismaService` criado como modulo global
+- [X] Seed script para dados iniciais
 
 ### ID7 - CRUD Completo
 
-- [ ] CRUD de Usuarios (registro, perfil)
-- [ ] CRUD de Ficcoes Interativas (criar, listar, detalhar, editar, excluir)
-- [ ] CRUD de Escritores (vincular, listar, remover)
-- [ ] CRUD de Avaliacoes (criar, listar, editar, excluir)
-- [ ] Paginacao nas listagens
+- [X] CRUD de Usuarios (registro, perfil)
+- [X] CRUD de Ficcoes Interativas (criar, listar, detalhar, editar, excluir)
+- [X] CRUD de Escritores (vincular, listar, remover)
+- [X] CRUD de Avaliacoes (criar, listar, editar, excluir)
+- [X] Paginacao nas listagens
 
 ### ID8 - Autenticacao JWT
 
-- [ ] Registro de usuario com hash bcrypt
-- [ ] Login retornando token JWT
-- [ ] Guard JWT protegendo rotas
-- [ ] Estrategia Passport-JWT implementada
-- [ ] Validacao de autoria nos endpoints protegidos
+- [X] Registro de usuario com hash bcrypt
+- [X] Login retornando token JWT
+- [X] Guard JWT protegendo rotas
+- [X] Estrategia Passport-JWT implementada
+- [X] Validacao de autoria nos endpoints protegidos
 
 ### ID9 - Validacao e Tratamento de Erros
 
-- [ ] DTOs com `class-validator` para cada endpoint
-- [ ] `ValidationPipe` global configurado
-- [ ] Tratamento de erros com codigos HTTP adequados (400, 401, 403, 404, 409)
-- [ ] Mensagens de erro claras e padronizadas
+- [X] DTOs com `class-validator` para cada endpoint
+- [X] `ValidationPipe` global configurado
+- [X] Tratamento de erros com codigos HTTP adequados (400, 401, 403, 404, 409)
+- [X] Mensagens de erro claras e padronizadas
 
 ---
 
@@ -81,17 +81,17 @@
 
 ### ID10 - Testes Unitarios
 
-- [ ] Testes unitarios nos Services (ficcoes, avaliacoes, escritores, auth)
-- [ ] Prisma Client mockado nos testes
-- [ ] Cenarios de sucesso e erro cobertos
-- [ ] Cobertura minima de 70%
+- [X] Testes unitarios nos Services (ficcoes, avaliacoes, escritores, auth)
+- [X] Prisma Client mockado nos testes
+- [X] Cenarios de sucesso e erro cobertos
+- [X] Cobertura minima de 70%
 
 ### ID11 - Testes E2E
 
-- [ ] Testes e2e nos Controllers principais
-- [ ] Fluxo completo testado (registro -> login -> CRUD)
-- [ ] Banco de teste isolado
-- [ ] Comandos de teste documentados no README
+- [X] Testes e2e nos Controllers principais
+- [X] Fluxo completo testado (registro -> login -> CRUD)
+- [X] Banco de teste isolado
+- [X] Comandos de teste documentados no README
 
 ---
 

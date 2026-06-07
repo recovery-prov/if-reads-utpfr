@@ -1,0 +1,9 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/browse/page": "app/browse/page.js",
+  "/new-releases/page": "app/new-releases/page.js",
+  "/page": "app/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/story/[id]/page": "app/story/[id]/page.js",
+  "/top-rated/page": "app/top-rated/page.js"
+}

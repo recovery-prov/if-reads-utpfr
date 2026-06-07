@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  name         String
+  email        String     @unique
+  password     String
+  role         Role       @default(USER)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  fictions     Fiction[]
+  reviews      Review[]
+  favorites    Favorite[]
+
+  @@map("users")
+}
+
+model Fiction {
+  id           Int        @id @default(autoincrement())
+  title        String
+  description  String?
+  genre        String?
+  publishedAt  Int?
+  link         String?
+  authorId     Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  author       User       @relation(fields: [authorId], references: [id])
+  authors      Author[]
+  reviews      Review[]
+  favoritedBy  Favorite[]
+
+  @@map("fictions")
+}
+
+model Favorite {
+  userId     Int
+  fictionId  Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fiction    Fiction  @relation(fields: [fictionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, fictionId])
+  @@map("favorites")
+}
+
+model Author {
+  id        Int              @id @default(autoincrement())
+  name      String
+  role      String           @default("main_author")
+  fictionId Int
+  createdAt DateTime         @default(now())
+  fiction   Fiction          @relation(fields: [fictionId], references: [id], onDelete: Cascade)
+
+  @@map("authors")
+}
+
+model Review {
+  id             Int              @id @default(autoincrement())
+  rating         Int
+  comment        String?
+  narrative      Int
+  interactivity  Int
+  originality    Int
+  fictionId      Int
+  authorId       Int
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  fiction        Fiction          @relation(fields: [fictionId], references: [id], onDelete: Cascade)
+  author         User             @relation(fields: [authorId], references: [id])
+
+  @@unique([fictionId, authorId])
+  @@map("reviews")
+}
